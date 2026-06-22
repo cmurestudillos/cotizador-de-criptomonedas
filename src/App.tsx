@@ -6,7 +6,7 @@ import axios from 'axios';
 import Cotizacion from './components/Cotizacion';
 import Formulario from './components/Formulario';
 import Spinner from './components/Spinner/Spinner';
-import Error from './components/Error';
+import ErrorMessage from './components/Error';
 
 // Assets
 import imagen from './assets/img/cryptomonedas.png';
@@ -77,19 +77,36 @@ function App() {
       setCargando(true);
       setError('');
 
-      const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`;
+      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${moneda.toLowerCase()}&ids=${criptomoneda}`;
 
       const response = await axios.get(url);
+      const cotizacion = response.data?.[0];
 
       // Verificar si hay datos válidos en la respuesta
-      if (response.data?.DISPLAY?.[criptomoneda]?.[moneda]) {
+      if (cotizacion) {
+        const formatearPrecio = (valor: number | null | undefined): string | undefined =>
+          valor == null
+            ? undefined
+            : new Intl.NumberFormat('es-ES', { style: 'currency', currency: moneda }).format(valor);
+
         // Simular delay para mostrar spinner (opcional, puedes removarlo)
         setTimeout(() => {
-          setResultado(response.data.DISPLAY[criptomoneda][moneda]);
+          setResultado({
+            PRICE: formatearPrecio(cotizacion.current_price),
+            HIGHDAY: formatearPrecio(cotizacion.high_24h),
+            LOWDAY: formatearPrecio(cotizacion.low_24h),
+            CHANGEPCT24HOUR:
+              cotizacion.price_change_percentage_24h != null
+                ? String(cotizacion.price_change_percentage_24h)
+                : undefined,
+            LASTUPDATE: cotizacion.last_updated,
+            FROMSYMBOL: cotizacion.symbol?.toUpperCase(),
+            TOSYMBOL: moneda,
+          });
           setCargando(false);
         }, 1500);
       } else {
-        throw 'No se encontraron datos para esta combinación';
+        throw new Error('No se encontraron datos para esta combinación');
       }
     } catch (err) {
       setCargando(false);
@@ -135,7 +152,7 @@ function App() {
     if (error) {
       return (
         <ErrorContainer>
-          <Error mensaje={error} />
+          <ErrorMessage mensaje={error} />
         </ErrorContainer>
       );
     }

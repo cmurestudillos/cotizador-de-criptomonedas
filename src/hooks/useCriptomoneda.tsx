@@ -69,8 +69,8 @@ const useCriptomoneda = (
         aria-label={label}>
         <option value="">{opciones.length === 0 ? 'Cargando opciones...' : '- Seleccione una opción -'}</option>
         {opciones.map(opcion => (
-          <option key={opcion.CoinInfo.Id} value={opcion.CoinInfo.Name}>
-            {opcion.CoinInfo.FullName}
+          <option key={opcion.id} value={opcion.id}>
+            {opcion.name} ({opcion.symbol.toUpperCase()})
           </option>
         ))}
       </Select>
