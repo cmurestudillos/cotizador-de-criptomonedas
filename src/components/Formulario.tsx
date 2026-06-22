@@ -7,11 +7,11 @@ import useMoneda from '../hooks/useMoneda';
 import useCriptomoneda from '../hooks/useCriptomoneda';
 
 // Componentes
-import Error from './Error';
+import ErrorMessage from './Error';
 
 // Types
 import type { FormularioProps } from '../models/FormularioProps';
-import type { CriptoData } from '../types';
+import type { CriptoOpcion } from '../models/CriptoOpcion';
 
 //---------------------- Styled Components ---------------------//
 const Form = styled.form`
@@ -84,7 +84,7 @@ const ErrorContainer = styled.div`
 //---------------------- Component ---------------------//
 const Formulario: React.FC<FormularioProps> = ({ onSubmit, isLoading = false }) => {
   // State
-  const [listaCripto, setListaCripto] = useState<CriptoData[]>([]);
+  const [listaCripto, setListaCripto] = useState<CriptoOpcion[]>([]);
   const [error, setError] = useState<string>('');
   const [cargandoCriptos, setCargandoCriptos] = useState<boolean>(true);
 
@@ -109,11 +109,12 @@ const Formulario: React.FC<FormularioProps> = ({ onSubmit, isLoading = false }) 
     const consultarAPI = async () => {
       try {
         setCargandoCriptos(true);
-        const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD';
+        const url =
+          'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1';
         const response = await axios.get(url);
 
-        if (response.data?.Data && Array.isArray(response.data.Data)) {
-          setListaCripto(response.data.Data);
+        if (Array.isArray(response.data)) {
+          setListaCripto(response.data);
         } else {
           throw new Error('Formato de datos inválido');
         }
@@ -123,27 +124,11 @@ const Formulario: React.FC<FormularioProps> = ({ onSubmit, isLoading = false }) 
 
         // Lista de respaldo
         setListaCripto([
-          {
-            CoinInfo: {
-              Id: '1182',
-              Name: 'BTC',
-              FullName: 'Bitcoin (BTC)',
-            },
-          },
-          {
-            CoinInfo: {
-              Id: '7605',
-              Name: 'ETH',
-              FullName: 'Ethereum (ETH)',
-            },
-          },
-          {
-            CoinInfo: {
-              Id: '5031',
-              Name: 'ADA',
-              FullName: 'Cardano (ADA)',
-            },
-          },
+          { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin' },
+          { id: 'ethereum', symbol: 'eth', name: 'Ethereum' },
+          { id: 'cardano', symbol: 'ada', name: 'Cardano' },
+          { id: 'solana', symbol: 'sol', name: 'Solana' },
+          { id: 'polkadot', symbol: 'dot', name: 'Polkadot' },
         ]);
       } finally {
         setCargandoCriptos(false);
@@ -179,7 +164,7 @@ const Formulario: React.FC<FormularioProps> = ({ onSubmit, isLoading = false }) 
     <Form onSubmit={handleSubmit}>
       {error && (
         <ErrorContainer>
-          <Error mensaje={error} />
+          <ErrorMessage mensaje={error} />
         </ErrorContainer>
       )}
 

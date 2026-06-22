@@ -26,7 +26,7 @@ Una aplicación web moderna y elegante para consultar en tiempo real los precios
 ## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
-- **React 18** - Biblioteca de interfaz de usuario
+- **React 19** - Biblioteca de interfaz de usuario
 - **TypeScript** - Superset de JavaScript con tipado estático
 - **Vite** - Herramienta de construcción ultrarrápida
 - **Emotion/Styled** - CSS-in-JS para estilos dinámicos
@@ -42,8 +42,8 @@ Una aplicación web moderna y elegante para consultar en tiempo real los precios
 ## 📦 Instalación y Configuración
 
 ### Prerrequisitos
-- Node.js (versión 16 o superior)
-- npm o yarn
+- Node.js (versión 20 o superior)
+- pnpm
 
 ### Instalación Local
 
@@ -55,16 +55,16 @@ git clone https://github.com/cmurestudillos/cotizador-de-criptomonedas.git
 cd cotizador-de-criptomonedas
 
 # Instalar dependencias
-npm install
+pnpm install
 
 # Ejecutar en modo desarrollo
-npm run dev
+pnpm dev
 
 # Construir para producción
-npm run build
+pnpm build
 
 # Previsualizar build de producción
-npm run preview
+pnpm preview
 ```
 
 ## 🏗️ Estructura del Proyecto
